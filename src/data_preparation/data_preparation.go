@@ -3,23 +3,17 @@ package data_preparation
 import (
 	"encoding/csv"
 	"os"
+	"strconv"
 )
 
 type CityData struct {
 	city_id   int64
-	latitude  float32
+	latitude  float64
 	longitude float64
 }
 
-type Error struct {
-	msg string
-}
-
-func load_from_csv(
+func LoadFromCsv(
 	path string,
-	city_ind,
-	lat_ind int16,
-	long_ind int16,
 ) []CityData {
 	// Load city data from csv
 	var cities_data []CityData = []CityData{}
@@ -31,18 +25,24 @@ func load_from_csv(
 	}
 
 	csv_reader := csv.NewReader(file)
+
 	records, err := csv_reader.ReadAll()
 	if err != nil {
 		return cities_data
 	}
-
 	for _, row := range records {
+		if len(row) < 7 {
+			continue
+		}
+		city_id, _ := strconv.ParseInt(row[0], 10, 64)
+		latitude, _ := strconv.ParseFloat(row[5], 64)
+		longitude, _ := strconv.ParseFloat(row[6], 64)
 		cities_data = append(
 			cities_data,
 			CityData{
-				row[city_ind],
-				row[lat_ind],
-				row[long_ind],
+				city_id,
+				latitude,
+				longitude,
 			},
 		)
 	}

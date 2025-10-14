@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"flag"
-	"fmt"
 	"log"
 	"os"
 	"src/src/data_preparation"
@@ -11,8 +10,16 @@ import (
 
 func main() {
 	var input string
+	var initialSeq int = 5
 
 	flag.StringVar(&input, "input", "", "Input file to parse")
+	flag.IntVar(
+		&initialSeq,
+		"initialSeq",
+		5,
+		"Count randomly generate city sequences",
+	)
+
 	flag.Parse()
 
 	if input == "" {
@@ -25,6 +32,13 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Println(len(data_preparation.LoadFromCsv(input)))
+	var sequences [][]data_preparation.CityData
+	var data []data_preparation.CityData = data_preparation.LoadFromCsv(input)
 
+	for i := 0; i < initialSeq; i++ {
+		sequences = append(
+			sequences,
+			data,
+		)
+	}
 }
